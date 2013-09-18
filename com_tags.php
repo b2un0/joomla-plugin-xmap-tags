@@ -70,7 +70,6 @@ final class xmap_com_tags {
 				->from('#__tags AS t')
 				->where('t.parent_id = ' . $db->quote($parent_id))
 				->where('t.published = 1')
-				->where('t.parent_id <> 0')
 				->order('t.title');
 		
 		if (!$params['show_unauth']) {
