@@ -9,16 +9,24 @@
  
 defined('_JEXEC') or die;
 
-require_once JPATH_SITE . '/components/com_tags/helpers/route.php';
-
 final class xmap_com_tags {
 	
 	private static $views = array('tags', 'tag');
 	
+	private static $enabled = false;
+	
+	public function __construct() {
+		self::$enabled = JComponentHelper::isEnabled('com_tags');
+	
+		if(self::$enabled) {
+			require_once JPATH_SITE . '/components/com_tags/helpers/route.php';
+		}
+	}
+	
 	public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params) {
 		$uri = new JUri($parent->link);
 		
-		if(!in_array($uri->getVar('view'), self::$views)) {
+		if(!self::$enabled || !in_array($uri->getVar('view'), self::$views)) {
 			return;
 		}
 		
@@ -58,7 +66,7 @@ final class xmap_com_tags {
 		$db = JFactory::getDbo();
 		
 		$query = $db->getQuery(true)
-				->select(array('t.id', 't.title', 't.alias'))
+				->select(array('t.id', 't.title', 't.alias', 't.parent_id'))
 				->from('#__tags AS t')
 				->where('t.parent_id = ' . $db->quote($parent_id))
 				->where('t.published = 1')
@@ -88,8 +96,8 @@ final class xmap_com_tags {
 			$node->name = $row->title;
 			$node->uid = $parent->uid . '_tid_' . $row->id;
 			$node->browserNav = $parent->browserNav;
-			$node->priority = $params['category_priority'];
-			$node->changefreq = $params['category_changefreq'];
+			$node->priority = $params['tag_priority'];
+			$node->changefreq = $params['tag_priority'];
 			$node->pid = $row->parent_id;
 			$node->link = TagsHelperRoute::getTagRoute($row->id . ':' . $row->alias);
 			
