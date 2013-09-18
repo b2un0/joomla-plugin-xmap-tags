@@ -34,10 +34,10 @@ final class xmap_com_tags {
 		
 		$params['language_filter'] = $uri->getVar('tag_list_language_filter');
 		
-		$params['include_tags'] = JArrayHelper::getValue($params, 'include_tags');
+		$params['include_tags'] = JArrayHelper::getValue($params, 'include_tags', 1);
 		$params['include_tags'] = ($params['include_tags'] == 1 || ($params['include_tags'] == 2 && $xmap->view == 'xml') || ($params['include_tags'] == 3 && $xmap->view == 'html'));
 		
-		$params['show_unauth'] = JArrayHelper::getValue($params, 'show_unauth');
+		$params['show_unauth'] = JArrayHelper::getValue($params, 'show_unauth', 0);
 		$params['show_unauth'] = ($params['show_unauth'] == 1 || ( $params['show_unauth'] == 2 && $xmap->view == 'xml') || ( $params['show_unauth'] == 3 && $xmap->view == 'html'));
 				
 		$params['tag_priority'] = JArrayHelper::getValue($params, 'tag_priority', $parent->priority);
