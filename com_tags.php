@@ -96,7 +96,7 @@ final class xmap_com_tags {
 			$node->uid = $parent->uid . '_tid_' . $row->id;
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['tag_priority'];
-			$node->changefreq = $params['tag_priority'];
+			$node->changefreq = $params['tag_changefreq'];
 			$node->pid = $row->parent_id;
 			$node->link = TagsHelperRoute::getTagRoute($row->id . ':' . $row->alias);
 			
