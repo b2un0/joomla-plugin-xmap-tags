@@ -12,11 +12,12 @@
     <files>
         <filename plugin="com_tags">com_tags.php</filename>
     </files>
+    <scriptfile>script.installer.php</scriptfile>
     <updateservers>
         <server type="collection" priority="1" name="z-index development">http://www.z-index.net/en/extensions.xml</server>
     </updateservers>
-    <languages folder="lang">
-        <language tag="en-GB">en-GB.plg_xmap_com_tags.ini</language>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.plg_xmap_com_tags.ini</language>
     </languages>
     <config>
         <fields name="params">
