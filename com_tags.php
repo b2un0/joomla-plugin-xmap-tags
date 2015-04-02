@@ -11,8 +11,14 @@ defined('_JEXEC') or die;
 
 class xmap_com_tags
 {
+    /**
+     * @var array
+     */
     private static $views = array('tags', 'tag');
 
+    /**
+     * @var bool
+     */
     private static $enabled = false;
 
     public function __construct()
@@ -22,11 +28,17 @@ class xmap_com_tags
         JLoader::register('TagsHelperRoute', JPATH_SITE . '/components/com_tags/helpers/route.php');
     }
 
-    public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     */
+    public static function getTree($xmap, stdClass $parent, array &$params)
     {
         $uri = new JUri($parent->link);
 
-        if (!self::$enabled || !in_array($uri->getVar('view'), self::$views)) {
+        if (!self::$enabled || !in_array($uri->getVar('view'), self::$views))
+        {
             return;
         }
 
@@ -43,15 +55,18 @@ class xmap_com_tags
         $params['tag_priority'] = JArrayHelper::getValue($params, 'tag_priority', $parent->priority);
         $params['tag_changefreq'] = JArrayHelper::getValue($params, 'tag_changefreq', $parent->changefreq);
 
-        if ($params['tag_priority'] == -1) {
+        if ($params['tag_priority'] == -1)
+        {
             $params['tag_priority'] = $parent->priority;
         }
 
-        if ($params['tag_changefreq'] == -1) {
+        if ($params['tag_changefreq'] == -1)
+        {
             $params['tag_changefreq'] = $parent->changefreq;
         }
 
-        switch ($uri->getVar('view')) {
+        switch ($uri->getVar('view'))
+        {
             case 'tags':
                 self::getTagsTree($xmap, $parent, $params, $uri->getVar('parent_id', 0));
                 break;
@@ -62,7 +77,13 @@ class xmap_com_tags
         }
     }
 
-    private static function getTagsTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $parent_id)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     * @param int $parent_id
+     */
+    private static function getTagsTree($xmap, stdClass $parent, array &$params, $parent_id)
     {
         $db = JFactory::getDbo();
 
@@ -73,24 +94,28 @@ class xmap_com_tags
             ->where('t.published = 1')
             ->order('t.title');
 
-        if (!$params['show_unauth']) {
+        if (!$params['show_unauth'])
+        {
             $query->where('t.access IN(' . $params['groups'] . ')');
         }
 
-        if ($params['language_filter']) {
+        if ($params['language_filter'])
+        {
             $query->where('t.language IN(' . $db->quote($params['language_filter']) . ', ' . $db->quote('*') . ')');
         }
 
         $db->setQuery($query);
         $rows = $db->loadObjectList();
 
-        if (empty($rows)) {
+        if (empty($rows))
+        {
             return;
         }
 
         $xmap->changeLevel(1);
 
-        foreach ($rows as $row) {
+        foreach ($rows as $row)
+        {
             $node = new stdclass;
             $node->id = $parent->id;
             $node->name = $row->title;
@@ -102,13 +127,16 @@ class xmap_com_tags
             $node->link = TagsHelperRoute::getTagRoute($row->id . ':' . $row->alias);
 
             // workaround
-            if (strpos($node->link, '&Itemid=') === false) {
+            if (strpos($node->link, '&Itemid=') === false)
+            {
                 $node->link .= '&Itemid=' . $parent->id;
             }
 
-            if ($xmap->printNode($node) !== false) {
+            if ($xmap->printNode($node) !== false)
+            {
                 self::getTagsTree($xmap, $parent, $params, $row->id);
-                if ($params['include_tags']) {
+                if ($params['include_tags'])
+                {
                     self::getTagTree($xmap, $parent, $params, array($row->id));
                 }
             }
@@ -117,28 +145,39 @@ class xmap_com_tags
         $xmap->changeLevel(-1);
     }
 
-    private static function getTagTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params, array $tagIds, array $typesr = null)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     * @param array $tagIds
+     * @param array $typesr
+     */
+    private static function getTagTree($xmap, stdClass $parent, array &$params, array $tagIds, array $typesr = null)
     {
         $db = JFactory::getDbo();
         $rows = array();
 
-        foreach ($tagIds as $tagId) {
+        foreach ($tagIds as $tagId)
+        {
             $listQuery = New JHelperTags;
             $query = $listQuery->getTagItemsQuery($tagId, $typesr, false, 'c.core_title', 'ASC', true, $params['language_filter']);
             $db->setQuery($query);
             $result = $db->loadObjectList();
-            if (is_array($result)) {
+            if (is_array($result))
+            {
                 $rows += $result;
             }
         }
 
-        if (empty($rows)) {
+        if (empty($rows))
+        {
             return;
         }
 
         $xmap->changeLevel(1);
 
-        foreach ($rows as $row) {
+        foreach ($rows as $row)
+        {
             $node = new stdclass;
             $node->id = $parent->id;
             $node->name = $row->core_title;
