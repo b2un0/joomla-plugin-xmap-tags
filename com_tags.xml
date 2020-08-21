@@ -14,7 +14,7 @@
     </files>
     <scriptfile>script.installer.php</scriptfile>
     <updateservers>
-        <server type="collection" priority="1" name="z-index development">http://www.z-index.net/en/extensions.xml</server>
+        <server type="extension" priority="1" name="Xmap - Tags Integration">https://raw.githubusercontent.com/z-index-net/joomla-plugin-xmap-tags/master/updatestream.xml</server>
     </updateservers>
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.plg_xmap_com_tags.ini</language>
